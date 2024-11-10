@@ -1,0 +1,216 @@
+/* Gaya dasar halaman */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Gaya untuk seluruh halaman */
+body {
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    min-height: 100vh;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    width: 100%;
+    background-color: #4CAF50;
+    padding: 10px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.navbar-menu {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Mengurangi jarak antar menu */
+}
+
+.navbar-menu li {
+    display: inline;
+}
+
+.navbar-menu a {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.navbar-menu a:hover {
+    text-decoration: underline;
+}
+
+/* Kontainer utama */
+.container {
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Heading */
+h1, h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Tabel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px; /* Mengurangi padding pada tabel */
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #e9e9e9;
+}
+
+td img {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+}
+
+/* Link */
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Formulir input */
+form label {
+    display: block;
+    margin: 8px 0 4px;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="number"],
+form select,
+form input[type="file"] {
+    width: 100%;
+    padding: 8px; /* Mengurangi padding agar lebih kompak */
+    margin-bottom: 12px; /* Mengurangi margin bawah */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Tombol */
+button, input[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: rgb(88, 33, 33);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Pesan sukses dan error */
+.success, .error {
+    text-align: center;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 4px;
+}
+
+.success {
+    background-color: #e7f3e7;
+    color: #4CAF50;
+}
+
+.error {
+    background-color: #fbe9e7;
+    color: #f44336;
+}
+
+/* Gaya untuk bagian formulir dengan gambar */
+.form-image-preview {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.form-image-preview img {
+    max-width: 100%;
+    max-height: 150px;
+    margin: 10px 0;
+}
+
+/* Responsif */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    table, th, td {
+        font-size: 14px;
+    }
+
+    button, input[type="submit"] {
+        font-size: 14px;
+    }
+
+    h1, h2 {
+        font-size: 18px;
+    }
+
+    .navbar-menu {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    form input[type="text"],
+    form input[type="number"],
+    form select {
+        padding: 6px; /* Menyesuaikan padding di perangkat mobile */
+    }
+}

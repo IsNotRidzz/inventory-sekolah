@@ -1,12 +1,10 @@
 <?php
 include 'koneksi.php';
-include 'navbar.php'; 
+include 'navbar.php';
 
-// Query untuk mengambil data barang dan nama ruangan
-$sql = "SELECT Barang.*, Ruangan.nama_ruangan 
-        FROM Barang 
-        JOIN Ruangan ON Barang.lokasi_sekarang = Ruangan.id_ruangan";
-$result = $conn->query($sql);
+// Query untuk mengambil semua ruangan
+$sql_ruangan = "SELECT * FROM Ruangan";
+$result_ruangan = $conn->query($sql_ruangan);
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +14,48 @@ $result = $conn->query($sql);
     <title>Daftar Barang</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Gaya untuk image preview saat diklik */
+        .container {
+            margin: 20px auto;
+            width: 90%;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .ruangan-section {
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .ruangan-section h3 {
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+        }
+
         .img-thumbnail {
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
@@ -26,67 +65,64 @@ $result = $conn->query($sql);
             transform: scale(1.1);
         }
 
-        /* Gaya untuk modal yang menampilkan gambar perbesar */
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
+        .no-barang {
+            text-align: center;
+            color: #888;
+            font-style: italic;
         }
 
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .close {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            color: white;
-            font-size: 35px;
+        .total-row {
             font-weight: bold;
-            cursor: pointer;
+            background-color: #f4f4f4;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Daftar Barang</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Barang</th>
-                    <th>Gambar</th>
-                    <th>Harga</th>
-                    <th>Merek</th>
-                    <th>Jumlah</th>
-                    <th>Lokasi</th>
-                    <th>Tanggal</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if ($result->num_rows > 0) {
-                    while($row = $result->fetch_assoc()) {
-                        // Mengambil data dari database dan menampilkan tabel
-                        $id_barang = $row['id_barang'];
-                        $gambar = $row['gambar'] ? "<img src='uploads/{$row['gambar']}' alt='{$row['nama_barang']}' width='50' class='img-thumbnail' onclick='openModal(\"uploads/{$row['gambar']}\")'>" : 'No Image';
+        <h2>Daftar Barang Berdasarkan Ruangan</h2>
+        
+        <?php
+        if ($result_ruangan->num_rows > 0) {
+            while ($ruangan = $result_ruangan->fetch_assoc()) {
+                $id_ruangan = $ruangan['id_ruangan'];
+                $nama_ruangan = $ruangan['nama_ruangan'];
+
+                // Query untuk mengambil barang berdasarkan ruangan yang memiliki jumlah lebih dari 0
+                $sql_barang = "SELECT * FROM Barang WHERE lokasi_sekarang = $id_ruangan AND jumlah_barang > 0";
+                $result_barang = $conn->query($sql_barang);
+        ?>
+        
+        <div class="ruangan-section">
+            <h3>Ruangan: <?php echo $nama_ruangan; ?></h3>
+            <?php if ($result_barang->num_rows > 0) { ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Gambar</th>
+                        <th>Harga</th>
+                        <th>Merek</th>
+                        <th>Jumlah</th>
+                        <th>Tanggal</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $total_jumlah = 0;
+                    $total_harga = 0;
+                    while ($barang = $result_barang->fetch_assoc()) {
+                        $id_barang = $barang['id_barang'];
+                        $gambar = $barang['gambar'] ? "<img src='uploads/{$barang['gambar']}' alt='{$barang['nama_barang']}' width='50' class='img-thumbnail'>" : 'No Image';
+                        $total_jumlah += $barang['jumlah_barang'];
+                        $total_harga += $barang['harga_barang'] * $barang['jumlah_barang'];
                         echo "<tr>
-                                <td>{$row['nama_barang']}</td>
+                                <td>{$barang['nama_barang']}</td>
                                 <td>{$gambar}</td>
-                                <td>{$row['harga_barang']}</td>
-                                <td>{$row['merek_barang']}</td>
-                                <td>{$row['jumlah_barang']}</td>
-                                <td>{$row['nama_ruangan']}</td> <!-- Menampilkan nama ruangan -->
-                                <td>{$row['tanggal']}</td>
+                                <td>{$barang['harga_barang']}</td>
+                                <td>{$barang['merek_barang']}</td>
+                                <td>{$barang['jumlah_barang']}</td>
+                                <td>{$barang['tanggal']}</td>
                                 <td>
                                     <a href='edit_barang.php?id={$id_barang}'>Edit</a> | 
                                     <a href='hapus_barang.php?id={$id_barang}'>Hapus</a> | 
@@ -94,42 +130,33 @@ $result = $conn->query($sql);
                                 </td>
                             </tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='8'>Tidak ada barang tersedia.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Modal untuk menampilkan gambar perbesar -->
-    <div id="imageModal" class="modal">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img class="modal-content" id="modalImage">
-    </div>
-
-    <script>
-        // Fungsi untuk membuka modal dengan gambar besar
-        function openModal(imageSrc) {
-            var modal = document.getElementById("imageModal");
-            var modalImage = document.getElementById("modalImage");
-            modal.style.display = "flex"; // Menampilkan modal
-            modalImage.src = imageSrc; // Set gambar perbesar
-        }
-
-        // Fungsi untuk menutup modal
-        function closeModal() {
-            var modal = document.getElementById("imageModal");
-            modal.style.display = "none"; // Menutup modal
-        }
-
-        // Menutup modal jika pengguna mengklik di luar gambar
-        window.onclick = function(event) {
-            var modal = document.getElementById("imageModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
+                    ?>
+                </tbody>
+            </table>
+            <!-- Menambahkan baris total jumlah dan harga -->
+            <table>
+                <tr class="total-row">
+                    <td colspan="4">Total Jumlah Barang</td>
+                    <td><?php echo $total_jumlah; ?></td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="4">Total Harga Barang</td>
+                    <td><?php echo number_format($total_harga, 2); ?></td>
+                    <td colspan="2"></td>
+                </tr>
+            </table>
+            <?php } else { ?>
+            <p class="no-barang">Tidak ada barang di ruangan ini.</p>
+            <?php } ?>
+        </div>
+        
+        <?php
             }
+        } else {
+            echo "<p class='no-barang'>Tidak ada ruangan tersedia.</p>";
         }
-    </script>
+        ?>
+    </div>
 </body>
 </html>
